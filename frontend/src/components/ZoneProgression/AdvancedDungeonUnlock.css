@@ -1,0 +1,460 @@
+/* Advanced Dungeon Unlock Styles */
+.advanced-dungeon-unlock {
+  padding: 2rem;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 12px;
+  color: white;
+  min-height: 600px;
+}
+
+.dungeon-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.dungeon-header h2 {
+  font-size: 2.5rem;
+  margin: 0 0 0.5rem 0;
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dungeon-header p {
+  font-size: 1.1rem;
+  color: #ccc;
+  margin: 0;
+}
+
+/* Category Tabs */
+.category-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.category-tab {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 120px;
+  backdrop-filter: blur(10px);
+}
+
+.category-tab:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.category-tab.active {
+  background: var(--category-color);
+  border-color: var(--category-color);
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+}
+
+.category-icon {
+  font-size: 1.5rem;
+}
+
+.category-name {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.category-count {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+}
+
+/* Dungeon Grid */
+.dungeon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dungeon-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.dungeon-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.dungeon-card.unlocked {
+  border-color: var(--tier-color);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dungeon-card.unlocked:hover {
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.2);
+}
+
+.dungeon-card.locked {
+  opacity: 0.7;
+}
+
+.dungeon-card.expanded {
+  transform: scale(1.02);
+  z-index: 10;
+}
+
+/* Dungeon Card Header */
+.dungeon-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.dungeon-tier {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--tier-color);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.tier-icon {
+  font-size: 1rem;
+}
+
+.tier-name {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dungeon-status {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.status-unlocked {
+  color: #48bb78;
+}
+
+.status-locked {
+  color: #e53e3e;
+}
+
+/* Dungeon Name */
+.dungeon-name {
+  font-size: 1.3rem;
+  margin: 0 0 1rem 0;
+  color: #ffd700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Progress Section */
+.progress-section {
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--tier-color), rgba(255, 215, 0, 0.8));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  color: #ccc;
+  text-align: center;
+  display: block;
+}
+
+/* Requirements Section */
+.requirements-section {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-left: 4px solid var(--tier-color);
+}
+
+.requirements-section h4 {
+  margin: 0 0 0.75rem 0;
+  color: #ffd700;
+  font-size: 1rem;
+}
+
+.requirements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.requirement-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.requirement-item:before {
+  content: "•";
+  color: var(--tier-color);
+  font-weight: bold;
+}
+
+.requirement-label {
+  flex: 1;
+}
+
+/* Features Section */
+.features-section {
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.features-section h4 {
+  margin: 0 0 0.75rem 0;
+  color: #ffd700;
+  font-size: 1rem;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.feature-icon {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.enter-dungeon-btn {
+  width: 100%;
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  color: #333;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.enter-dungeon-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+/* Tier Glow Effect */
+.tier-glow {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--tier-color), transparent, var(--tier-color));
+  border-radius: 18px;
+  z-index: -1;
+  opacity: 0.3;
+  animation: tierGlow 3s infinite ease-in-out;
+}
+
+@keyframes tierGlow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.02);
+  }
+}
+
+/* Category Summary */
+.category-summary {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-card h3 {
+  margin: 0 0 1rem 0;
+  color: #ffd700;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.mastery-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border-left: 4px solid #ffd700;
+}
+
+.stat-label {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  color: #ffd700;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .advanced-dungeon-unlock {
+    padding: 1rem;
+  }
+  
+  .dungeon-header h2 {
+    font-size: 2rem;
+  }
+  
+  .category-tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .category-tab {
+    flex-direction: row;
+    min-width: 200px;
+    justify-content: center;
+  }
+  
+  .dungeon-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .dungeon-card {
+    padding: 1rem;
+  }
+  
+  .mastery-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .dungeon-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .dungeon-header p {
+    font-size: 1rem;
+  }
+  
+  .category-tab {
+    min-width: 150px;
+    padding: 0.75rem 1rem;
+  }
+  
+  .dungeon-card-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .dungeon-name {
+    font-size: 1.1rem;
+  }
+  
+  .features-section,
+  .requirements-section {
+    padding: 0.75rem;
+  }
+}
+
+/* Animation for newly unlocked dungeons */
+.dungeon-card.newly-unlocked {
+  animation: dungeonUnlock 2s ease-out;
+}
+
+@keyframes dungeonUnlock {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Special effects for master tier */
+.dungeon-card[style*="--tier-color: #805ad5"] .tier-glow {
+  animation: masterTierGlow 2s infinite ease-in-out;
+}
+
+@keyframes masterTierGlow {
+  0%, 100% {
+    opacity: 0.3;
+    box-shadow: 0 0 20px rgba(128, 90, 213, 0.3);
+  }
+  50% {
+    opacity: 0.8;
+    box-shadow: 0 0 40px rgba(128, 90, 213, 0.6);
+  }
+}

@@ -1,0 +1,886 @@
+/* Dungeon Icon Styles */
+.dungeon-icon {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.dungeon-icon.in-range {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.dungeon-icon.accessible:hover {
+  transform: scale(1.15);
+}
+
+.dungeon-icon.locked {
+  opacity: 0.6;
+}
+
+.dungeon-sprite {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 4px;
+}
+
+.dungeon-sprite img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.dungeon-emoji {
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.dungeon-name {
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  max-width: 80px;
+  line-height: 1.2;
+}
+
+.task-count-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #EF4444;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.lock-indicator {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  font-size: 16px;
+}
+
+.interaction-hint {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  animation: pulse 2s infinite;
+}
+
+.special-features-indicator {
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+}
+
+/* Category-specific colors */
+.dungeon-icon.freelance {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.4));
+  border: 2px solid #3B82F6;
+}
+
+.dungeon-icon.community {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.4));
+  border: 2px solid #10B981;
+}
+
+.dungeon-icon.corporate {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.4));
+  border: 2px solid #8B5CF6;
+}
+
+/* Dungeon Interior Styles */
+.dungeon-interior {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: white;
+  overflow-y: auto;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.dungeon-interior.freelance {
+  background: linear-gradient(135deg, #1e3a8a, #1e40af);
+}
+
+.dungeon-interior.community {
+  background: linear-gradient(135deg, #064e3b, #065f46);
+}
+
+.dungeon-interior.corporate {
+  background: linear-gradient(135deg, #581c87, #6b21a8);
+}
+
+.dungeon-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.exit-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 20px;
+  transition: all 0.3s ease;
+}
+
+.exit-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.dungeon-title h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.dungeon-category {
+  font-size: 1rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.dungeon-description {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.special-features {
+  margin-bottom: 20px;
+}
+
+.special-features h3 {
+  margin-bottom: 10px;
+  color: #fbbf24;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.feature-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.task-filters {
+  margin-bottom: 20px;
+}
+
+.task-filters h3 {
+  margin-bottom: 10px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-buttons button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-buttons button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-buttons button.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.tasks-section {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+}
+
+.no-tasks {
+  text-align: center;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.entry-requirements {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.entry-requirements h4 {
+  margin-bottom: 10px;
+  color: #fbbf24;
+}
+
+.requirements-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.requirement-item {
+  font-size: 0.9rem;
+}
+
+/* Task List Styles */
+.task-list {
+  width: 100%;
+}
+
+.task-section {
+  margin-bottom: 30px;
+}
+
+.task-section.locked-section {
+  opacity: 0.7;
+}
+
+.section-title {
+  margin-bottom: 10px;
+  color: #fbbf24;
+  font-size: 1.3rem;
+}
+
+.section-description {
+  margin-bottom: 15px;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.tasks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.empty-task-list {
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.empty-task-list h3 {
+  margin-bottom: 10px;
+  color: #fbbf24;
+}
+
+/* Task Card Styles */
+.task-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.task-card.accessible {
+  cursor: pointer;
+}
+
+.task-card.accessible:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.task-card.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.task-card.freelance {
+  border-left: 4px solid #3B82F6;
+}
+
+.task-card.community {
+  border-left: 4px solid #10B981;
+}
+
+.task-card.corporate {
+  border-left: 4px solid #8B5CF6;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.task-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.difficulty-badge {
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.task-description {
+  margin-bottom: 15px;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.task-requirements {
+  margin-bottom: 15px;
+}
+
+.requirement-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.requirement-label {
+  font-weight: 500;
+}
+
+.requirement-value {
+  font-weight: bold;
+}
+
+.requirement-value.met {
+  color: #10B981;
+}
+
+.requirement-value.unmet {
+  color: #EF4444;
+}
+
+.task-rewards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.reward-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.reward-icon {
+  font-size: 0.9rem;
+}
+
+.task-skills {
+  margin-bottom: 10px;
+}
+
+.skills-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.skill-tag {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.skill-tag.more {
+  background: rgba(255, 255, 255, 0.1);
+  font-style: italic;
+}
+
+.task-deadline {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  color: #fbbf24;
+}
+
+.task-lock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.lock-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.lock-message {
+  font-weight: bold;
+  text-align: center;
+}
+
+.task-category-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+/* Task Actions */
+.task-actions {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.submit-task-button {
+  width: 100%;
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.submit-task-button:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.submit-task-button:active {
+  transform: translateY(0);
+}
+
+.submit-task-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Dungeon Container Styles */
+.dungeon-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.dungeon-wrapper {
+  z-index: 10;
+}
+
+.dungeon-loading {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  z-index: 100;
+}
+
+.dungeon-debug-info {
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.dungeon-legend {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  z-index: 50;
+  min-width: 200px;
+}
+
+.dungeon-legend h4 {
+  margin: 0 0 10px 0;
+  color: #fbbf24;
+  font-size: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.legend-icon {
+  font-size: 1.2rem;
+}
+
+.legend-name {
+  flex: 1;
+}
+
+.legend-count {
+  color: #9CA3AF;
+  font-size: 0.8rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dungeon-interior {
+    padding: 15px;
+  }
+  
+  .dungeon-title h1 {
+    font-size: 2rem;
+  }
+  
+  .tasks-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .filter-buttons {
+    flex-direction: column;
+  }
+  
+  .requirements-list {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .dungeon-legend {
+    position: relative;
+    top: auto;
+    left: auto;
+    margin-bottom: 20px;
+  }
+}
+/*
+ Task Management Integration Styles */
+.dungeon-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.create-task-button,
+.manage-applications-button {
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.create-task-button:hover,
+.manage-applications-button:hover {
+  background: #2563eb;
+}
+
+.manage-applications-button {
+  background: #10b981;
+}
+
+.manage-applications-button:hover {
+  background: #059669;
+}
+
+/* Error State */
+.error-state {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.error-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.error-state h3 {
+  margin: 0 0 8px 0;
+  color: #374151;
+}
+
+.error-state p {
+  margin: 0 0 16px 0;
+}
+
+.retry-button {
+  padding: 8px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.retry-button:hover {
+  background: #2563eb;
+}
+
+/* Task Card Updates */
+.apply-task-button {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.apply-task-button:hover {
+  background: #059669;
+}
+
+/* Application Modal */
+.application-modal {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content {
+  padding: 0 24px 24px 24px;
+}
+
+.task-summary {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.task-summary h4 {
+  margin: 0 0 8px 0;
+  color: #111827;
+}
+
+.task-summary p {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.cancel-button,
+.apply-button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid;
+  font-size: 14px;
+}
+
+.cancel-button {
+  background: white;
+  color: #6b7280;
+  border-color: #d1d5db;
+}
+
+.cancel-button:hover {
+  background-color: #f9fafb;
+}
+
+.apply-button {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.apply-button:hover:not(:disabled) {
+  background: #059669;
+}
+
+.apply-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Updates */
+@media (max-width: 768px) {
+  .dungeon-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .dungeon-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .create-task-button,
+  .manage-applications-button {
+    flex: 1;
+    text-align: center;
+  }
+}

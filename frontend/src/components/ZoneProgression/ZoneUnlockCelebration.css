@@ -1,0 +1,576 @@
+/* Zone Unlock Celebration Styles */
+.zone-unlock-celebration {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.zone-unlock-celebration.entrance {
+  animation: celebrationEntrance 1s ease-out forwards;
+}
+
+.zone-unlock-celebration.main {
+  animation: celebrationMain 2s ease-in-out forwards;
+}
+
+.zone-unlock-celebration.rewards {
+  animation: celebrationRewards 3s ease-in-out forwards;
+}
+
+.zone-unlock-celebration.exit {
+  animation: celebrationExit 1s ease-in forwards;
+}
+
+/* Background overlay */
+.celebration-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  backdrop-filter: blur(5px);
+}
+
+/* Particle effects */
+.particle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle-effect {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* City lights particles */
+.particle-effect.city_lights .particle {
+  background: linear-gradient(45deg, #ffd700, #ffff00);
+  width: 4px;
+  height: 4px;
+  animation: cityLightsFloat 3s infinite ease-in-out;
+}
+
+.particle-effect.city_lights .particle-0 { top: 20%; left: 10%; animation-delay: 0s; }
+.particle-effect.city_lights .particle-1 { top: 30%; left: 80%; animation-delay: 0.5s; }
+.particle-effect.city_lights .particle-2 { top: 60%; left: 20%; animation-delay: 1s; }
+.particle-effect.city_lights .particle-3 { top: 70%; left: 90%; animation-delay: 1.5s; }
+.particle-effect.city_lights .particle-4 { top: 40%; left: 60%; animation-delay: 2s; }
+
+/* Forest sparkles particles */
+.particle-effect.forest_sparkles .particle {
+  background: linear-gradient(45deg, #32cd32, #90ee90);
+  width: 3px;
+  height: 3px;
+  animation: forestSparkle 2.5s infinite ease-in-out;
+}
+
+/* Falling leaves particles */
+.particle-effect.falling_leaves .particle {
+  background: linear-gradient(45deg, #8b4513, #daa520);
+  width: 6px;
+  height: 4px;
+  border-radius: 50% 0;
+  animation: fallingLeaves 4s infinite linear;
+}
+
+/* Snow particles */
+.particle-effect.snow_particles .particle {
+  background: #ffffff;
+  width: 3px;
+  height: 3px;
+  animation: snowFall 3s infinite linear;
+}
+
+/* Water ripples */
+.particle-effect.water_ripples .particle {
+  background: radial-gradient(circle, rgba(64, 224, 255, 0.6) 0%, transparent 70%);
+  width: 20px;
+  height: 20px;
+  animation: waterRipple 2s infinite ease-out;
+}
+
+/* Sand particles */
+.particle-effect.sand_particles .particle {
+  background: linear-gradient(45deg, #f4a460, #deb887);
+  width: 2px;
+  height: 2px;
+  animation: sandDrift 3.5s infinite ease-in-out;
+}
+
+/* Main celebration content */
+.celebration-content {
+  position: relative;
+  text-align: center;
+  color: white;
+  max-width: 600px;
+  padding: 2rem;
+  pointer-events: auto;
+}
+
+/* Title styling */
+.celebration-title {
+  margin-bottom: 2rem;
+  opacity: 0;
+  transform: translateY(-50px);
+}
+
+.celebration-title.entrance {
+  animation: titleEntrance 1s ease-out 0.5s forwards;
+}
+
+.celebration-title h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  background: linear-gradient(45deg, #ffd700, #ffff00, #ffd700);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: goldShimmer 2s infinite ease-in-out;
+}
+
+.title-underline {
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #ffd700, transparent);
+  margin: 1rem auto;
+  animation: underlineExpand 1s ease-out 1s forwards;
+}
+
+/* Description styling */
+.celebration-description {
+  opacity: 0;
+  transform: translateY(30px);
+  margin-bottom: 2rem;
+}
+
+.celebration-description.main {
+  animation: descriptionFadeIn 1s ease-out 0.5s forwards;
+}
+
+.celebration-description p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Unlock icon */
+.unlock-icon {
+  width: 120px;
+  height: 120px;
+  margin: 2rem auto;
+  position: relative;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.unlock-icon.main {
+  animation: iconAppear 1s ease-out 1s forwards;
+}
+
+.icon-glow {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: iconGlow 2s infinite ease-in-out;
+}
+
+.icon-core {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zone-icon, .dungeon-icon, .reveal-icon {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.zone-circle {
+  fill: none;
+  stroke: #ffd700;
+  stroke-width: 3;
+  stroke-dasharray: 251;
+  stroke-dashoffset: 251;
+  animation: circleReveal 2s ease-out forwards;
+}
+
+.unlock-check {
+  fill: none;
+  stroke: #32cd32;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: checkReveal 1s ease-out 1s forwards;
+}
+
+.dungeon-base, .dungeon-roof {
+  fill: #8b4513;
+  stroke: #654321;
+  stroke-width: 2;
+}
+
+.dungeon-door {
+  fill: #4a4a4a;
+  stroke: #333;
+  stroke-width: 1;
+}
+
+.reveal-circle {
+  fill: none;
+  stroke: #40e0ff;
+  stroke-width: 3;
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+.reveal-wave {
+  fill: none;
+  stroke: #87ceeb;
+  stroke-width: 2;
+  animation: waveMotion 1.5s infinite ease-in-out;
+}
+
+/* Rewards section */
+.celebration-rewards {
+  opacity: 0;
+  transform: translateY(50px);
+  margin-top: 2rem;
+}
+
+.celebration-rewards.rewards {
+  animation: rewardsFadeIn 1s ease-out forwards;
+}
+
+.celebration-rewards h3 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #ffd700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.reward-item {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  backdrop-filter: blur(10px);
+  transform: scale(0);
+  animation: rewardItemAppear 0.5s ease-out forwards;
+}
+
+.reward-item:nth-child(1) { animation-delay: 0.2s; }
+.reward-item:nth-child(2) { animation-delay: 0.4s; }
+.reward-item:nth-child(3) { animation-delay: 0.6s; }
+.reward-item:nth-child(4) { animation-delay: 0.8s; }
+
+.reward-icon {
+  font-size: 2rem;
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.reward-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.reward-amount {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+.reward-type {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.special-features {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.special-features h4 {
+  color: #ffd700;
+  margin-bottom: 0.5rem;
+}
+
+.special-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.special-features li {
+  padding: 0.25rem 0;
+  color: #ccc;
+}
+
+.special-features li:before {
+  content: "✨ ";
+  color: #ffd700;
+}
+
+/* Continue button */
+.continue-button {
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  color: #333;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  margin-top: 2rem;
+}
+
+.continue-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+/* Map reveal overlay */
+.map-reveal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.reveal-wave-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 2px solid rgba(255, 215, 0, 0.6);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: revealWave 3s ease-out forwards;
+}
+
+/* Animations */
+@keyframes celebrationEntrance {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes celebrationMain {
+  0%, 100% { opacity: 1; }
+}
+
+@keyframes celebrationRewards {
+  0%, 100% { opacity: 1; }
+}
+
+@keyframes celebrationExit {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes titleEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes goldShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes underlineExpand {
+  from { width: 0; }
+  to { width: 200px; }
+}
+
+@keyframes descriptionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes iconAppear {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes iconGlow {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+@keyframes circleReveal {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes checkReveal {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes waveMotion {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+@keyframes rewardsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rewardItemAppear {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+@keyframes revealWave {
+  from {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  to {
+    width: 200vw;
+    height: 200vw;
+    opacity: 0;
+  }
+}
+
+/* Particle animations */
+@keyframes cityLightsFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+  50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+}
+
+@keyframes forestSparkle {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fallingLeaves {
+  0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+@keyframes snowFall {
+  0% { transform: translateY(-100vh); opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+@keyframes waterRipple {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(3); opacity: 0; }
+}
+
+@keyframes sandDrift {
+  0%, 100% { transform: translateX(0) translateY(0); opacity: 0.6; }
+  50% { transform: translateX(30px) translateY(-10px); opacity: 1; }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .celebration-content {
+    padding: 1rem;
+    max-width: 90vw;
+  }
+  
+  .celebration-title h1 {
+    font-size: 2rem;
+  }
+  
+  .celebration-description p {
+    font-size: 1rem;
+  }
+  
+  .unlock-icon {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .zone-icon, .dungeon-icon, .reveal-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .rewards-grid {
+    grid-template-columns: 1fr;
+  }
+}
