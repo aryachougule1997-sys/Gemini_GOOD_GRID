@@ -312,6 +312,106 @@ export class WorkHistoryModel {
   }
 
   /**
+   * Get volunteers/freelancers by organization
+   */
+  static async getVolunteersByOrganization(organizationId: string, filters?: {
+    category?: WorkCategory;
+    page?: number;
+    limit?: number;
+  }): Promise<{
+    volunteers: Array<{
+      userId: string;
+      username: string;
+      email: string;
+      tasksCompleted: number;
+      averageRating: number;
+      totalXP: number;
+      totalRWIS: number;
+      categories: WorkCategory[];
+      lastActivity: Date;
+    }>;
+    total: number;
+    page: number;
+    limit: number;
+  }> {
+    const page = filters?.page || 1;
+    const limit = filters?.limit || 20;
+    const offset = (page - 1) * limit;
+
+    let query = `
+      SELECT 
+        u.id as user_id,
+        u.username,
+        u.email,
+        COUNT(wh.id) as tasks_completed,
+        AVG(wh.quality_score) as average_rating,
+        SUM(wh.xp_earned) as total_xp,
+        SUM(wh.rwis_earned) as total_rwis,
+        ARRAY_AGG(DISTINCT wh.category) as categories,
+        MAX(wh.created_at) as last_activity
+      FROM users u
+      JOIN work_history wh ON u.id = wh.user_id
+      JOIN tasks t ON wh.task_id = t.id
+      WHERE t.organization_id = $1
+    `;
+    
+    const params: any[] = [organizationId];
+    let paramIndex = 2;
+
+    if (filters?.category) {
+      query += ` AND wh.category = $${paramIndex++}`;
+      params.push(filters.category);
+    }
+
+    query += `
+      GROUP BY u.id, u.username, u.email
+      ORDER BY tasks_completed DESC, last_activity DESC
+      LIMIT $${paramIndex++} OFFSET $${paramIndex++}
+    `;
+    params.push(limit, offset);
+
+    const result = await pool.query(query, params);
+    
+    // Get total count
+    let countQuery = `
+      SELECT COUNT(DISTINCT u.id)
+      FROM users u
+      JOIN work_history wh ON u.id = wh.user_id
+      JOIN tasks t ON wh.task_id = t.id
+      WHERE t.organization_id = $1
+    `;
+    const countParams: any[] = [organizationId];
+    let countParamIndex = 2;
+
+    if (filters?.category) {
+      countQuery += ` AND wh.category = $${countParamIndex++}`;
+      countParams.push(filters.category);
+    }
+
+    const countResult = await pool.query(countQuery, countParams);
+    const total = parseInt(countResult.rows[0].count);
+
+    const volunteers = result.rows.map(row => ({
+      userId: row.user_id,
+      username: row.username,
+      email: row.email,
+      tasksCompleted: parseInt(row.tasks_completed),
+      averageRating: parseFloat(row.average_rating) || 0,
+      totalXP: parseInt(row.total_xp) || 0,
+      totalRWIS: parseInt(row.total_rwis) || 0,
+      categories: row.categories,
+      lastActivity: row.last_activity
+    }));
+
+    return {
+      volunteers,
+      total,
+      page,
+      limit
+    };
+  }
+
+  /**
    * Get recent activity for a user
    */
   static async getRecentActivity(userId: string, days: number = 30): Promise<WorkHistoryItem[]> {

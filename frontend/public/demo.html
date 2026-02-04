@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Grid - Gamified UI Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .demo-container {
+            position: relative;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+        }
+        
+        .demo-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(20, 20, 40, 0.9), rgba(40, 20, 60, 0.9));
+            border-bottom: 3px solid #444;
+        }
+        
+        .demo-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 
+                0 0 10px #8a2be2,
+                0 0 20px #8a2be2,
+                2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 10px;
+            animation: glow-pulse 2s ease-in-out infinite alternate;
+        }
+        
+        .demo-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+        
+        .demo-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #666;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card:hover {
+            border-color: #8a2be2;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.3);
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.1), transparent);
+            animation: card-shine 3s ease-in-out infinite;
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .feature-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .feature-description {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .demo-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 2px solid #444;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-particle {
+            position: absolute;
+            font-size: 20px;
+            animation: float-up 15s linear infinite;
+            opacity: 0.3;
+        }
+        
+        .particle-1 { left: 10%; animation-delay: 0s; }
+        .particle-2 { left: 30%; animation-delay: 5s; }
+        .particle-3 { left: 50%; animation-delay: 10s; }
+        .particle-4 { left: 70%; animation-delay: 3s; }
+        .particle-5 { left: 90%; animation-delay: 8s; }
+        
+        @keyframes glow-pulse {
+            0% { text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2, 2px 2px 4px rgba(0, 0, 0, 0.8); }
+            100% { text-shadow: 0 0 20px #8a2be2, 0 0 30px #8a2be2, 2px 2px 4px rgba(0, 0, 0, 0.8); }
+        }
+        
+        @keyframes card-shine {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes float-up {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .demo-title { font-size: 32px; }
+            .demo-features { grid-template-columns: 1fr; }
+            .demo-stats { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- Floating Elements -->
+        <div class="floating-elements">
+            <div class="floating-particle particle-1">⭐</div>
+            <div class="floating-particle particle-2">💎</div>
+            <div class="floating-particle particle-3">🏆</div>
+            <div class="floating-particle particle-4">🪙</div>
+            <div class="floating-particle particle-5">⚡</div>
+        </div>
+        
+        <!-- Header -->
+        <div class="demo-header">
+            <h1 class="demo-title">GOOD GRID</h1>
+            <p class="demo-subtitle">Gamified Community Contribution Platform</p>
+        </div>
+        
+        <!-- Features Grid -->
+        <div class="demo-features">
+            <div class="feature-card">
+                <span class="feature-icon">🎮</span>
+                <h3 class="feature-title">Gaming HUD</h3>
+                <p class="feature-description">
+                    Real-time player stats with XP bars, trust scores, and level indicators. 
+                    Complete with animated level-up celebrations and achievement notifications.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🗺️</span>
+                <h3 class="feature-title">Interactive Map</h3>
+                <p class="feature-description">
+                    Explore pixelated geographical zones with unlockable areas. 
+                    Discover dungeons and opportunity hubs as you progress through your journey.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">👤</span>
+                <h3 class="feature-title">Hero Profile</h3>
+                <p class="feature-description">
+                    Comprehensive character dashboard with work history, achievements, and customization. 
+                    Track progress across Freelance, Community, and Corporate guilds.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">👥</span>
+                <h3 class="feature-title">Social Hub</h3>
+                <p class="feature-description">
+                    Connect with nearby heroes, form epic teams, and compete on local leaderboards. 
+                    Build your community network and collaborate on meaningful projects.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🏰</span>
+                <h3 class="feature-title">Dungeon Quests</h3>
+                <p class="feature-description">
+                    Enter specialized dungeons for different work categories. 
+                    Complete tasks, earn rewards, and unlock new abilities and areas.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🏆</span>
+                <h3 class="feature-title">Achievement System</h3>
+                <p class="feature-description">
+                    Earn badges, climb leaderboards, and showcase your impact. 
+                    Convert gaming achievements into real-world career credentials.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="demo-stats">
+            <div class="stat-item">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Major Components</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">15+</div>
+                <div class="stat-label">UI Features</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">Gamified</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Work Categories</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate stats on scroll
+            const stats = document.querySelectorAll('.stat-value');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target;
+                        const finalValue = target.textContent;
+                        let currentValue = 0;
+                        const increment = finalValue.includes('+') ? 1 : (finalValue.includes('%') ? 5 : 1);
+                        const timer = setInterval(() => {
+                            currentValue += increment;
+                            if (currentValue >= parseInt(finalValue)) {
+                                target.textContent = finalValue;
+                                clearInterval(timer);
+                            } else {
+                                target.textContent = currentValue + (finalValue.includes('%') ? '%' : (finalValue.includes('+') ? '+' : ''));
+                            }
+                        }, 50);
+                    }
+                });
+            });
+            
+            stats.forEach(stat => observer.observe(stat));
+            
+            // Add click effects to feature cards
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

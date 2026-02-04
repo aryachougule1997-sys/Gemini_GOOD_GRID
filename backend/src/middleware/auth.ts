@@ -108,35 +108,6 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 };
 
 /**
- * Optional authentication middleware (doesn't fail if no token)
+ * Authentication middleware (alias for authenticate)
  */
-export const optionalAuth = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const authHeader = req.headers.authorization;
-    
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7);
-      
-      try {
-        const decoded = verifyToken(token);
-        const user = await UserModel.findById(decoded.userId);
-        
-        if (user) {
-          req.user = {
-            id: decoded.userId,
-            username: decoded.username,
-            email: decoded.email,
-            role: 'user' // Default role
-          };
-        }
-      } catch (jwtError) {
-        // Token invalid, but continue without user
-      }
-    }
-    
-    next();
-  } catch (error) {
-    console.error('Optional auth error:', error);
-    next();
-  }
-};
+export const authenticateToken = authenticate;

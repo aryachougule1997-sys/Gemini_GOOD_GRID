@@ -7,7 +7,9 @@ import usersRoutes from './users';
 import tasksRoutes from './tasks';
 import gamificationRoutes from './gamification';
 import zoneProgressionRoutes from './zoneProgression';
+import organizationsRoutes from './organizations';
 import { initializeTaskSubmissionRoutes } from './taskSubmissions';
+import { createSocialRoutes } from './social';
 import { Pool } from 'pg';
 
 const router = express.Router();
@@ -21,9 +23,11 @@ export const initializeRoutes = (db: Pool) => {
   router.use('/career', careerRoutes);
   router.use('/users', usersRoutes);
   router.use('/tasks', tasksRoutes);
+  router.use('/organizations', organizationsRoutes);
   router.use('/gamification', gamificationRoutes);
   router.use('/zone-progression', zoneProgressionRoutes);
   router.use('/task-submissions', initializeTaskSubmissionRoutes(db));
+  router.use('/social', createSocialRoutes(db));
 
   return router;
 };
@@ -112,6 +116,34 @@ router.get('/', (req, res) => {
         getCareerPaths: 'POST /api/career/career-paths',
         generateSummary: 'POST /api/career/summary/generate',
         analyzeSkillGaps: 'POST /api/career/skills/gap-analysis'
+      },
+      organizations: {
+        register: 'POST /api/organizations/register',
+        getAll: 'GET /api/organizations',
+        getById: 'GET /api/organizations/:id',
+        update: 'PUT /api/organizations/:id',
+        verify: 'POST /api/organizations/:id/verify',
+        getTasks: 'GET /api/organizations/:id/tasks',
+        getVolunteers: 'GET /api/organizations/:id/volunteers',
+        getAnalytics: 'GET /api/organizations/:id/analytics',
+        getImpactReport: 'GET /api/organizations/:id/impact-report',
+        rate: 'POST /api/organizations/:id/rate'
+      },
+      social: {
+        nearbyUsers: 'GET /api/social/nearby-users',
+        zoneUsers: 'GET /api/social/zone-users',
+        createTeam: 'POST /api/social/teams',
+        inviteToTeam: 'POST /api/social/teams/:teamId/invite',
+        respondToInvitation: 'PUT /api/social/team-invitations/:invitationId/respond',
+        getTeam: 'GET /api/social/teams/:teamId',
+        getLeaderboard: 'GET /api/social/leaderboard/:type',
+        shareAchievement: 'POST /api/social/achievements/share',
+        getCommunityFeed: 'GET /api/social/community-feed',
+        findMentors: 'GET /api/social/mentors/:category',
+        requestMentorship: 'POST /api/social/mentorship/request',
+        getPreferences: 'GET /api/social/preferences',
+        updatePreferences: 'PUT /api/social/preferences',
+        getInvitations: 'GET /api/social/invitations'
       }
     }
   });
@@ -125,6 +157,7 @@ defaultRouter.use('/dungeons', dungeonRoutes);
 defaultRouter.use('/career', careerRoutes);
 defaultRouter.use('/users', usersRoutes);
 defaultRouter.use('/tasks', tasksRoutes);
+defaultRouter.use('/organizations', organizationsRoutes);
 defaultRouter.use('/gamification', gamificationRoutes);
 defaultRouter.use('/zone-progression', zoneProgressionRoutes);
 

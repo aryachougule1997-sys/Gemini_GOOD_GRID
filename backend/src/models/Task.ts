@@ -259,6 +259,86 @@ export class TaskModel {
   }
 
   /**
+   * Find tasks by organization
+   */
+  static async findByOrganization(organizationId: string, filters?: {
+    status?: TaskStatus;
+    category?: WorkCategory;
+    page?: number;
+    limit?: number;
+  }): Promise<{ tasks: Task[]; total: number; page: number; limit: number }> {
+    const page = filters?.page || 1;
+    const limit = filters?.limit || 20;
+    const offset = (page - 1) * limit;
+
+    let query = `
+      SELECT id, title, description, category, dungeon_id, creator_id, organization_id, requirements, rewards, status, deadline, created_at, updated_at
+      FROM tasks 
+      WHERE organization_id = $1
+    `;
+    
+    const params: any[] = [organizationId];
+    let paramIndex = 2;
+
+    if (filters?.status) {
+      query += ` AND status = $${paramIndex++}`;
+      params.push(filters.status);
+    }
+
+    if (filters?.category) {
+      query += ` AND category = $${paramIndex++}`;
+      params.push(filters.category);
+    }
+
+    query += ' ORDER BY created_at DESC';
+    query += ` LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+    params.push(limit, offset);
+
+    const result = await pool.query(query, params);
+    
+    // Get total count
+    let countQuery = 'SELECT COUNT(*) FROM tasks WHERE organization_id = $1';
+    const countParams: any[] = [organizationId];
+    let countParamIndex = 2;
+
+    if (filters?.status) {
+      countQuery += ` AND status = $${countParamIndex++}`;
+      countParams.push(filters.status);
+    }
+
+    if (filters?.category) {
+      countQuery += ` AND category = $${countParamIndex++}`;
+      countParams.push(filters.category);
+    }
+
+    const countResult = await pool.query(countQuery, countParams);
+    const total = parseInt(countResult.rows[0].count);
+
+    const tasks = result.rows.map(task => ({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      category: task.category,
+      dungeonId: task.dungeon_id,
+      creatorId: task.creator_id,
+      organizationId: task.organization_id,
+      requirements: task.requirements,
+      rewards: task.rewards,
+      status: task.status,
+      deadline: task.deadline,
+      createdAt: task.created_at,
+      updatedAt: task.updated_at
+    }));
+
+    return {
+      tasks,
+      total,
+      page,
+      limit
+    };
+  }
+
+  /**
    * Delete task
    */
   static async delete(taskId: string): Promise<void> {

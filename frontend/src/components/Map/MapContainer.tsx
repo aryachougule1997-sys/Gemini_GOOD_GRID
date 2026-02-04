@@ -53,6 +53,22 @@ const MapContainer: React.FC<MapContainerProps> = ({
   const [careerNotifications, setCareerNotifications] = useState<string[]>([]);
   const [activeCareerTool, setActiveCareerTool] = useState<'none' | 'profile' | 'resume' | 'jobs' | 'hub'>('none');
   const [showCareerPanel, setShowCareerPanel] = useState(false);
+  const [mapDimensions, setMapDimensions] = useState({
+    width: window.innerWidth - 450, // Leave space for sidebar
+    height: window.innerHeight - 100 // Leave space for header and controls
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setMapDimensions({
+        width: window.innerWidth - 450,
+        height: window.innerHeight - 100
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     loadMapData();
@@ -592,8 +608,8 @@ const MapContainer: React.FC<MapContainerProps> = ({
             userStats={userStats}
             onPlayerMove={handlePlayerMove}
             onDungeonEnter={handleDungeonEnter}
-            width={800}
-            height={600}
+            width={mapDimensions.width}
+            height={mapDimensions.height}
           />
           
           {/* Movement Controls Help */}

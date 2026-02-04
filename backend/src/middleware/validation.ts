@@ -276,8 +276,105 @@ export const taskSearchSchema = Joi.object({
 });
 
 /**
+ * Organization registration validation schema
+ */
+export const organizationRegistrationSchema = Joi.object({
+  name: Joi.string()
+    .min(2)
+    .max(200)
+    .required()
+    .messages({
+      'string.min': 'Organization name must be at least 2 characters long',
+      'string.max': 'Organization name must not exceed 200 characters',
+      'any.required': 'Organization name is required'
+    }),
+  
+  description: Joi.string()
+    .max(2000)
+    .allow('')
+    .messages({
+      'string.max': 'Description must not exceed 2000 characters'
+    }),
+  
+  contactEmail: Joi.string()
+    .email()
+    .required()
+    .messages({
+      'string.email': 'Please provide a valid contact email address',
+      'any.required': 'Contact email is required'
+    }),
+  
+  website: Joi.string()
+    .uri()
+    .allow('')
+    .messages({
+      'string.uri': 'Please provide a valid website URL'
+    })
+});
+
+/**
+ * Organization update validation schema
+ */
+export const organizationUpdateSchema = Joi.object({
+  name: Joi.string()
+    .min(2)
+    .max(200)
+    .messages({
+      'string.min': 'Organization name must be at least 2 characters long',
+      'string.max': 'Organization name must not exceed 200 characters'
+    }),
+  
+  description: Joi.string()
+    .max(2000)
+    .allow('')
+    .messages({
+      'string.max': 'Description must not exceed 2000 characters'
+    }),
+  
+  contactEmail: Joi.string()
+    .email()
+    .messages({
+      'string.email': 'Please provide a valid contact email address'
+    }),
+  
+  website: Joi.string()
+    .uri()
+    .allow('')
+    .messages({
+      'string.uri': 'Please provide a valid website URL'
+    })
+}).min(1); // At least one field must be provided for update
+
+/**
+ * Organization rating validation schema
+ */
+export const organizationRatingSchema = Joi.object({
+  rating: Joi.number()
+    .min(1)
+    .max(5)
+    .required()
+    .messages({
+      'number.min': 'Rating must be at least 1',
+      'number.max': 'Rating must not exceed 5',
+      'any.required': 'Rating is required'
+    }),
+  
+  feedback: Joi.string()
+    .max(1000)
+    .allow('')
+    .messages({
+      'string.max': 'Feedback must not exceed 1000 characters'
+    }),
+  
+  taskId: Joi.string().uuid().allow(null)
+});
+
+/**
  * Validation middleware functions
  */
+export const validateOrganizationData = validate(organizationRegistrationSchema);
+export const validateOrganizationUpdate = validate(organizationUpdateSchema);
+export const validateOrganizationRating = validate(organizationRatingSchema);
 export const validateTaskCreation = validate(taskCreationSchema);
 export const validateTaskApplication = validate(taskApplicationSchema);
 export const validateTaskSearch = (req: Request, res: Response, next: NextFunction) => {

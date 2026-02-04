@@ -1955,11 +1955,14 @@ const MapEngine: React.FC<MapEngineProps> = ({
     <div
       ref={containerRef}
       style={{
-        width: `${width}px`,
-        height: `${height}px`,
+        width: '100%',
+        height: '100%',
+        minWidth: `${width}px`,
+        minHeight: `${height}px`,
         border: '2px solid #00ff88',
         borderRadius: '10px',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        position: 'relative'
       }}
     />
   );
