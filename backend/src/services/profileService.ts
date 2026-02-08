@@ -335,4 +335,64 @@ export class ProfileService {
             throw error;
         }
     }
+
+    async getCategoryReputation(userId: string, category: 'FREELANCE' | 'COMMUNITY' | 'CORPORATE'): Promise<any> {
+        try {
+            const stats = await this.getUserStats(userId);
+            if (!stats) {
+                throw new Error('User stats not found');
+            }
+
+            const categoryKey = category.toLowerCase() as 'freelance' | 'community' | 'corporate';
+            const categoryStats = stats.categoryStats[categoryKey];
+
+            return {
+                category,
+                reputation: {
+                    score: categoryStats.averageRating * 20, // Convert 5-star to 100-point scale
+                    level: Math.floor(categoryStats.totalXP / 200) + 1,
+                    tasksCompleted: categoryStats.tasksCompleted,
+                    specializations: categoryStats.specializations,
+                    trustMultiplier: category === 'COMMUNITY' ? 1.2 : category === 'FREELANCE' ? 0.9 : 0.8
+                }
+            };
+        } catch (error) {
+            console.error('Error fetching category reputation:', error);
+            throw error;
+        }
+    }
+
+    async updateCategoryStats(userId: string, category: string, stats: any): Promise<void> {
+        try {
+            const currentStats = await this.getUserStats(userId);
+            if (!currentStats) {
+                throw new Error('User stats not found');
+            }
+
+            const updatedCategoryStats = {
+                ...currentStats.categoryStats,
+                [category]: {
+                    ...currentStats.categoryStats[category as keyof typeof currentStats.categoryStats],
+                    ...stats
+                }
+            };
+
+            await this.db.query(
+                'UPDATE user_stats SET category_stats = $1 WHERE user_id = $2',
+                [JSON.stringify(updatedCategoryStats), userId]
+            );
+        } catch (error) {
+            console.error('Error updating category stats:', error);
+            throw error;
+        }
+    }
+
+    async generateProfileExport(userId: string, format: string): Promise<any> {
+        try {
+            return await this.exportProfileData(userId, format as 'json' | 'csv');
+        } catch (error) {
+            console.error('Error generating profile export:', error);
+            throw error;
+        }
+    }
 }

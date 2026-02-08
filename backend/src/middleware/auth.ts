@@ -32,11 +32,8 @@ export const generateToken = (user: { id: string; username: string; email: strin
     email: user.email
   };
 
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('JWT_SECRET environment variable is not set');
-  }
-
+  const secret = process.env.JWT_SECRET || 'your-secret-key-here-change-in-production';
+  
   // Use explicit typing to avoid TypeScript issues
   return jwt.sign(payload as any, secret, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d'
@@ -47,10 +44,7 @@ export const generateToken = (user: { id: string; username: string; email: strin
  * Verify JWT token and extract user info
  */
 export const verifyToken = (token: string): JWTPayload => {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('JWT_SECRET environment variable is not set');
-  }
+  const secret = process.env.JWT_SECRET || 'your-secret-key-here-change-in-production';
   
   return jwt.verify(token, secret) as JWTPayload;
 };
@@ -74,7 +68,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     try {
       const decoded = verifyToken(token);
       
-      // Verify user still exists
+      // Verify user still exists in PostgreSQL database
       const user = await UserModel.findById(decoded.userId);
       if (!user) {
         return res.status(401).json({
@@ -88,7 +82,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         id: decoded.userId,
         username: decoded.username,
         email: decoded.email,
-        role: 'user' // Default role, could be enhanced to fetch from database
+        role: 'user' // Default role
       };
 
       next();

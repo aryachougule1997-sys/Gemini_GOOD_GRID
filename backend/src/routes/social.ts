@@ -12,6 +12,10 @@ export function createSocialRoutes(db: Pool) {
   router.get('/nearby-users', authenticateToken, async (req, res) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
       const radius = parseInt(req.query.radius as string) || 50;
       
       const nearbyUsers = await socialService.findNearbyUsers(userId, radius);
@@ -25,6 +29,9 @@ export function createSocialRoutes(db: Pool) {
   router.get('/zone-users', authenticateToken, async (req, res) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
       
       const zoneUsers = await socialService.findUsersInSameZone(userId);
       res.json(zoneUsers);
@@ -38,6 +45,10 @@ export function createSocialRoutes(db: Pool) {
   router.post('/teams', authenticateToken, async (req, res) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
       const { taskId, maxMembers } = req.body;
       
       if (!taskId) {
@@ -55,6 +66,10 @@ export function createSocialRoutes(db: Pool) {
   router.post('/teams/:teamId/invite', authenticateToken, async (req, res) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
       const { teamId } = req.params;
       const { inviteeId } = req.body;
       
@@ -107,6 +122,10 @@ export function createSocialRoutes(db: Pool) {
   router.get('/leaderboard/:type', authenticateToken, async (req, res) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
       const { type } = req.params;
       const limit = parseInt(req.query.limit as string) || 10;
       
@@ -130,6 +149,10 @@ export function createSocialRoutes(db: Pool) {
   router.post('/achievements/share', authenticateToken, async (req, res) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
       const { badgeId, message } = req.body;
       
       if (!badgeId) {
@@ -147,6 +170,10 @@ export function createSocialRoutes(db: Pool) {
   router.get('/community-feed', authenticateToken, async (req, res) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
       const limit = parseInt(req.query.limit as string) || 20;
       
       const feed = await socialService.getCommunityFeed(userId, limit);
@@ -161,6 +188,10 @@ export function createSocialRoutes(db: Pool) {
   router.get('/mentors/:category', authenticateToken, async (req, res) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
       const { category } = req.params;
       
       if (!['FREELANCE', 'COMMUNITY', 'CORPORATE'].includes(category)) {
@@ -181,6 +212,10 @@ export function createSocialRoutes(db: Pool) {
   router.post('/mentorship/request', authenticateToken, async (req, res) => {
     try {
       const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+      
       const { mentorId, category } = req.body;
       
       if (!mentorId || !category) {

@@ -10,7 +10,7 @@ const router = express.Router();
  */
 router.post('/check-unlocks', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
     if (!userId) {
       return res.status(401).json({ error: 'User not authenticated' });
     }
@@ -38,7 +38,7 @@ router.post('/check-unlocks', authenticateToken, async (req, res) => {
  */
 router.get('/status', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
     if (!userId) {
       return res.status(401).json({ error: 'User not authenticated' });
     }
@@ -63,7 +63,7 @@ router.get('/status', authenticateToken, async (req, res) => {
  */
 router.get('/advanced-dungeons', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
     if (!userId) {
       return res.status(401).json({ error: 'User not authenticated' });
     }
@@ -89,7 +89,7 @@ router.get('/advanced-dungeons', authenticateToken, async (req, res) => {
 router.get('/zone-content/:zoneId', authenticateToken, async (req, res) => {
   try {
     const { zoneId } = req.params;
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
     
     if (!userId) {
       return res.status(401).json({ error: 'User not authenticated' });
@@ -122,7 +122,7 @@ router.get('/zone-content/:zoneId', authenticateToken, async (req, res) => {
 router.post('/trigger-unlock/:zoneId', authenticateToken, async (req, res) => {
   try {
     const { zoneId } = req.params;
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
     
     if (!userId) {
       return res.status(401).json({ error: 'User not authenticated' });
@@ -167,7 +167,7 @@ router.post('/trigger-unlock/:zoneId', authenticateToken, async (req, res) => {
 router.get('/requirements/:zoneId', authenticateToken, async (req, res) => {
   try {
     const { zoneId } = req.params;
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
     
     if (!userId) {
       return res.status(401).json({ error: 'User not authenticated' });
@@ -217,7 +217,7 @@ router.get('/requirements/:zoneId', authenticateToken, async (req, res) => {
  */
 router.get('/unlock-history', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
     if (!userId) {
       return res.status(401).json({ error: 'User not authenticated' });
     }

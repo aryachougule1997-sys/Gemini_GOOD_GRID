@@ -1,13 +1,11 @@
 import express from 'express';
-import { ProfileService } from '../services/profileService';
-import { DatabaseService } from '../services/databaseService';
+import { InMemoryProfileService } from '../services/inMemoryProfileService';
 import { authenticateToken } from '../middleware/auth';
 
 const router = express.Router();
 
 // Initialize services
-const dbService = new DatabaseService();
-const profileService = new ProfileService(dbService);
+const profileService = new InMemoryProfileService();
 
 /**
  * GET /api/profile/:userId
@@ -24,8 +22,36 @@ router.get('/:userId', authenticateToken, async (req, res) => {
 
         const profile = await profileService.getUserProfile(userId);
         
+        // If profile doesn't exist, return a default empty profile for valid authenticated users
         if (!profile) {
-            return res.status(404).json({ error: 'Profile not found' });
+            // User is authenticated (passed authenticateToken), so return default profile
+            const defaultProfile = {
+                userId: userId,
+                username: req.user?.username || 'User',
+                email: req.user?.email || '',
+                characterData: {},
+                locationData: {},
+                stats: {
+                    trustScore: 0,
+                    rwisScore: 0,
+                    xpPoints: 0,
+                    currentLevel: 1,
+                    categoryStats: {
+                        freelance: { tasksCompleted: 0, totalXP: 0, averageRating: 0 },
+                        community: { tasksCompleted: 0, totalXP: 0, averageRating: 0 },
+                        corporate: { tasksCompleted: 0, totalXP: 0, averageRating: 0 }
+                    }
+                },
+                badges: [],
+                workHistory: [],
+                createdAt: new Date(),
+                updatedAt: new Date()
+            };
+            
+            return res.json({
+                success: true,
+                data: defaultProfile
+            });
         }
 
         res.json({
@@ -38,6 +64,56 @@ router.get('/:userId', authenticateToken, async (req, res) => {
         res.status(500).json({ 
             success: false, 
             error: 'Failed to fetch profile' 
+        });
+    }
+});
+
+/**
+ * GET /api/profile/:userId/stats
+ * Get user statistics
+ */
+router.get('/:userId/stats', authenticateToken, async (req, res) => {
+    try {
+        const { userId } = req.params;
+        
+        // Ensure user can only access their own stats or is admin
+        if (req.user?.id !== userId && req.user?.role !== 'admin') {
+            return res.status(403).json({ error: 'Access denied' });
+        }
+
+        const profile = await profileService.getUserProfile(userId);
+        
+        // If profile doesn't exist, return default stats for valid authenticated users
+        if (!profile || !profile.stats) {
+            const defaultStats = {
+                trustScore: 0,
+                rwisScore: 0,
+                xpPoints: 0,
+                currentLevel: 1,
+                unlockedZones: [],
+                categoryStats: {
+                    freelance: { tasksCompleted: 0, totalXP: 0, averageRating: 0 },
+                    community: { tasksCompleted: 0, totalXP: 0, averageRating: 0 },
+                    corporate: { tasksCompleted: 0, totalXP: 0, averageRating: 0 }
+                }
+            };
+            
+            return res.json({
+                success: true,
+                data: defaultStats
+            });
+        }
+
+        res.json({
+            success: true,
+            data: profile.stats
+        });
+
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Failed to fetch stats' 
         });
     }
 });

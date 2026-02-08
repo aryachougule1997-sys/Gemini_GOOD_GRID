@@ -217,10 +217,10 @@ class MapScene extends Phaser.Scene {
   private createPlayerSprite() {
     const graphics = this.add.graphics();
 
-    // Convert hex colors to numbers
-    const primaryColor = parseInt(this.characterData.colorPalette.primary.replace('#', ''), 16);
-    const secondaryColor = parseInt(this.characterData.colorPalette.secondary.replace('#', ''), 16);
-    const accentColor = parseInt(this.characterData.colorPalette.accent.replace('#', ''), 16);
+    // Convert hex colors to numbers with safe defaults
+    const primaryColor = parseInt((this.characterData?.colorPalette?.primary || '#FFB6C1').replace('#', ''), 16);
+    const secondaryColor = parseInt((this.characterData?.colorPalette?.secondary || '#87CEEB').replace('#', ''), 16);
+    const accentColor = parseInt((this.characterData?.colorPalette?.accent || '#98FB98').replace('#', ''), 16);
 
     // Create animation frames for different directions
     this.createPlayerAnimationFrames(graphics, primaryColor, secondaryColor, accentColor);
@@ -520,7 +520,7 @@ class MapScene extends Phaser.Scene {
   }
 
   private addAccessories(graphics: Phaser.GameObjects.Graphics) {
-    this.characterData.accessories.forEach(accessory => {
+    (this.characterData?.accessories || []).forEach(accessory => {
       switch (accessory.type) {
         case 'HAT':
           // Detailed hat with shading
@@ -1025,7 +1025,9 @@ class MapScene extends Phaser.Scene {
   }
 
   private renderDungeons() {
+    console.log('🏰 Rendering dungeons:', this.dungeons.length, 'dungeons found');
     this.dungeons.forEach(dungeon => {
+      console.log('  - Rendering dungeon:', dungeon.name, 'at', dungeon.coordinates);
       // Validate coordinates before rendering
       if (!this.isValidCoordinate(dungeon.coordinates)) {
         console.error(`Invalid coordinates for dungeon ${dungeon.name}: (${dungeon.coordinates.x}, ${dungeon.coordinates.y})`);

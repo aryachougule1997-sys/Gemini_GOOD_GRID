@@ -76,6 +76,9 @@ const CareerDashboard: React.FC<CareerDashboardProps> = ({ userId }) => {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'overview' | 'jobs' | 'resume' | 'skills'>('overview');
     const [resumeGenerating, setResumeGenerating] = useState(false);
+    const [generatedResume, setGeneratedResume] = useState<any>(null);
+    const [geminiAnalyzing, setGeminiAnalyzing] = useState(false);
+    const [geminiAnalysis, setGeminiAnalysis] = useState<string | null>(null);
 
     useEffect(() => {
         fetchRealUserData();
@@ -86,19 +89,19 @@ const CareerDashboard: React.FC<CareerDashboardProps> = ({ userId }) => {
             // Fetch real user data from Good Grid database
             const userResponse = await fetch(`/api/users/${userId}`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token') || 'demo-token'}`
+                    'Authorization': `Bearer ${localStorage.getItem('goodgrid_token') || 'demo-token'}`
                 }
             });
 
             const statsResponse = await fetch(`/api/users/${userId}/stats`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token') || 'demo-token'}`
+                    'Authorization': `Bearer ${localStorage.getItem('goodgrid_token') || 'demo-token'}`
                 }
             });
 
             const tasksResponse = await fetch(`/api/users/${userId}/tasks`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token') || 'demo-token'}`
+                    'Authorization': `Bearer ${localStorage.getItem('goodgrid_token') || 'demo-token'}`
                 }
             });
 
@@ -169,7 +172,7 @@ const CareerDashboard: React.FC<CareerDashboardProps> = ({ userId }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token') || 'demo-token'}`
+                    'Authorization': `Bearer ${localStorage.getItem('goodgrid_token') || 'demo-token'}`
                 },
                 body: JSON.stringify({
                     userData,
@@ -202,7 +205,7 @@ const CareerDashboard: React.FC<CareerDashboardProps> = ({ userId }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token') || 'demo-token'}`
+                    'Authorization': `Bearer ${localStorage.getItem('goodgrid_token') || 'demo-token'}`
                 },
                 body: JSON.stringify({
                     userData,
@@ -305,13 +308,14 @@ const CareerDashboard: React.FC<CareerDashboardProps> = ({ userId }) => {
 
     const generateResume = async () => {
         setResumeGenerating(true);
+        setGeneratedResume(null); // Clear previous resume
         try {
             // Use real user data for resume generation
             const response = await fetch('/api/career/resume/generate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token') || 'demo-token'}`
+                    'Authorization': `Bearer ${localStorage.getItem('goodgrid_token') || 'demo-token'}`
                 },
                 body: JSON.stringify({
                     userId: userId,
@@ -326,44 +330,117 @@ const CareerDashboard: React.FC<CareerDashboardProps> = ({ userId }) => {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log('Resume generated with real data:', result);
+                console.log('✅ Resume generated successfully:', result);
                 
-                // Export to multiple formats
-                const exportResponse = await fetch('/api/career/resume/export', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token') || 'demo-token'}`
-                    },
-                    body: JSON.stringify({
-                        resumeData: result.data,
-                        formats: ['HTML', 'PDF', 'DOCX'],
-                        templateId: 'modern-tech',
-                        includeGamification: true,
-                        colorScheme: 'BLUE'
-                    })
-                });
-
-                if (exportResponse.ok) {
-                    const exportResult = await exportResponse.json();
-                    
-                    // Show success message and download options
-                    alert(`🎉 Resume generated successfully!\n\nDownload options:\n• HTML: ${exportResult.htmlUrl}\n• PDF: ${exportResult.pdfUrl}\n• DOCX: ${exportResult.docxUrl}`);
-                    
-                    // Open HTML version in new tab
-                    if (exportResult.htmlUrl) {
-                        window.open(exportResult.htmlUrl, '_blank');
-                    }
-                }
+                // Store the generated resume
+                setGeneratedResume(result.data);
+                
+                // Show success message
+                alert('🎉 Resume generated successfully! Scroll down to view and download.');
             } else {
                 const error = await response.json();
-                alert(`Failed to generate resume: ${error.message || 'Unknown error'}`);
+                console.error('❌ Resume generation failed:', error);
+                alert(`Failed to generate resume: ${error.error || error.message || 'Unknown error'}`);
             }
         } catch (error) {
-            console.error('Failed to generate resume:', error);
+            console.error('❌ Failed to generate resume:', error);
             alert('Failed to generate resume. Please try again.');
         } finally {
             setResumeGenerating(false);
+        }
+    };
+
+    const downloadResume = () => {
+        if (!generatedResume) return;
+        
+        // Create a simple text version of the resume
+        let resumeText = '';
+        
+        if (generatedResume.personalInfo) {
+            resumeText += `${generatedResume.personalInfo.name}\n`;
+            resumeText += `${generatedResume.personalInfo.email}\n`;
+            if (generatedResume.personalInfo.phone) resumeText += `${generatedResume.personalInfo.phone}\n`;
+            resumeText += '\n';
+        }
+        
+        if (generatedResume.summary) {
+            resumeText += `PROFESSIONAL SUMMARY\n`;
+            resumeText += `${generatedResume.summary}\n\n`;
+        }
+        
+        if (generatedResume.experience && generatedResume.experience.length > 0) {
+            resumeText += `EXPERIENCE\n`;
+            generatedResume.experience.forEach((exp: any) => {
+                resumeText += `\n${exp.title || exp.role}\n`;
+                if (exp.company) resumeText += `${exp.company}\n`;
+                if (exp.duration) resumeText += `${exp.duration}\n`;
+                if (exp.description) resumeText += `${exp.description}\n`;
+                if (exp.achievements && exp.achievements.length > 0) {
+                    exp.achievements.forEach((achievement: string) => {
+                        resumeText += `• ${achievement}\n`;
+                    });
+                }
+            });
+            resumeText += '\n';
+        }
+        
+        if (generatedResume.skills && generatedResume.skills.length > 0) {
+            resumeText += `SKILLS\n`;
+            resumeText += generatedResume.skills.join(', ') + '\n\n';
+        }
+        
+        if (generatedResume.education && generatedResume.education.length > 0) {
+            resumeText += `EDUCATION\n`;
+            generatedResume.education.forEach((edu: any) => {
+                resumeText += `${edu.degree || edu.title}\n`;
+                if (edu.institution) resumeText += `${edu.institution}\n`;
+                if (edu.year) resumeText += `${edu.year}\n\n`;
+            });
+        }
+        
+        // Create and download the file
+        const blob = new Blob([resumeText], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${generatedResume.personalInfo?.name || 'resume'}_GoodGrid.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const generateGeminiAnalysis = async () => {
+        setGeminiAnalyzing(true);
+        setGeminiAnalysis(null);
+        try {
+            // Call the Gemini-powered dashboard endpoint
+            const response = await fetch('/api/career/dashboard', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('goodgrid_token') || 'demo-token'}`
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ Gemini AI Analysis Complete:', result);
+                
+                // Extract the AI-generated professional summary
+                if (result.success && result.data?.professionalSummary) {
+                    setGeminiAnalysis(result.data.professionalSummary);
+                } else {
+                    setGeminiAnalysis('⚠️ Gemini AI analysis completed but no summary was generated. Please try again.');
+                }
+            } else {
+                const error = await response.json();
+                setGeminiAnalysis(`❌ Gemini AI Error: ${error.message || 'Failed to generate analysis'}`);
+            }
+        } catch (error) {
+            console.error('Gemini AI analysis failed:', error);
+            setGeminiAnalysis('❌ Failed to connect to Gemini AI. Please check your connection and try again.');
+        } finally {
+            setGeminiAnalyzing(false);
         }
     };
 
@@ -651,6 +728,145 @@ const CareerDashboard: React.FC<CareerDashboardProps> = ({ userId }) => {
                 </p>
             </div>
 
+            {/* Gemini AI Career Analysis */}
+            <div style={{
+                background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%)',
+                border: '4px solid #667eea',
+                borderRadius: '20px',
+                padding: '30px',
+                marginBottom: '30px',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.5), 0 0 40px rgba(102, 126, 234, 0.3)'
+            }}>
+                <h2 style={{
+                    fontSize: '32px',
+                    fontWeight: 'bold',
+                    color: '#fff',
+                    marginBottom: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '15px'
+                }}>
+                    🤖 Gemini AI Career Analysis
+                    <div style={{
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        padding: '6px 12px',
+                        borderRadius: '12px',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                    }}>
+                        <div style={{
+                            width: '8px',
+                            height: '8px',
+                            backgroundColor: '#00ff88',
+                            borderRadius: '50%',
+                            animation: 'pulse 2s infinite'
+                        }}></div>
+                        LIVE AI
+                    </div>
+                </h2>
+                <p style={{
+                    color: '#ccc',
+                    fontSize: '16px',
+                    marginBottom: '20px',
+                    lineHeight: '1.5'
+                }}>
+                    Get AI-powered career insights generated by Google Gemini based on your real Good Grid profile, achievements, and work history.
+                </p>
+                
+                <button
+                    onClick={generateGeminiAnalysis}
+                    disabled={geminiAnalyzing}
+                    style={{
+                        background: geminiAnalyzing ? 
+                            'linear-gradient(135deg, #666 0%, #888 100%)' :
+                            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        border: 'none',
+                        padding: '18px 36px',
+                        borderRadius: '25px',
+                        color: '#fff',
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        cursor: geminiAnalyzing ? 'not-allowed' : 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '12px',
+                        transition: 'all 0.3s ease',
+                        opacity: geminiAnalyzing ? 0.7 : 1,
+                        boxShadow: geminiAnalyzing ? 'none' : '0 5px 20px rgba(102, 126, 234, 0.5)',
+                        marginBottom: '20px'
+                    }}
+                    onMouseEnter={(e) => {
+                        if (!geminiAnalyzing) {
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                            e.currentTarget.style.boxShadow = '0 8px 30px rgba(102, 126, 234, 0.7)';
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        if (!geminiAnalyzing) {
+                            e.currentTarget.style.transform = 'scale(1)';
+                            e.currentTarget.style.boxShadow = '0 5px 20px rgba(102, 126, 234, 0.5)';
+                        }
+                    }}
+                >
+                    {geminiAnalyzing ? (
+                        <>
+                            <div style={{
+                                width: '20px',
+                                height: '20px',
+                                border: '3px solid #fff',
+                                borderTop: '3px solid transparent',
+                                borderRadius: '50%',
+                                animation: 'spin 1s linear infinite'
+                            }}></div>
+                            Gemini AI is thinking...
+                        </>
+                    ) : (
+                        <>
+                            🤖 Generate with Gemini AI
+                        </>
+                    )}
+                </button>
+
+                {geminiAnalysis && (
+                    <div style={{
+                        background: 'linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(30,30,60,0.8) 100%)',
+                        border: '3px solid #667eea',
+                        borderRadius: '15px',
+                        padding: '25px',
+                        marginTop: '20px',
+                        position: 'relative'
+                    }}>
+                        <div style={{
+                            position: 'absolute',
+                            top: '-12px',
+                            left: '20px',
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            padding: '6px 16px',
+                            borderRadius: '12px',
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                            color: '#fff',
+                            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.5)'
+                        }}>
+                            ✨ Generated by Gemini AI
+                        </div>
+                        <p style={{
+                            color: '#fff',
+                            fontSize: '18px',
+                            lineHeight: '1.7',
+                            margin: '15px 0 0 0',
+                            fontStyle: 'italic'
+                        }}>
+                            {geminiAnalysis}
+                        </p>
+                    </div>
+                )}
+            </div>
+
             {/* Resume Generation */}
             <div style={{
                 background: 'linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(30,30,60,0.9) 100%)',
@@ -733,6 +949,169 @@ const CareerDashboard: React.FC<CareerDashboardProps> = ({ userId }) => {
                         </>
                     )}
                 </button>
+
+                {/* Display Generated Resume */}
+                {generatedResume && (
+                    <div style={{
+                        marginTop: '40px',
+                        padding: '30px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        borderRadius: '15px',
+                        border: '2px solid #43e97b'
+                    }}>
+                        <h3 style={{
+                            color: '#43e97b',
+                            fontSize: '24px',
+                            marginBottom: '20px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px'
+                        }}>
+                            ✨ Your Generated Resume
+                        </h3>
+
+                        {/* Personal Info */}
+                        {generatedResume.personalInfo && (
+                            <div style={{ marginBottom: '25px' }}>
+                                <h4 style={{ color: '#fff', fontSize: '28px', marginBottom: '5px' }}>
+                                    {generatedResume.personalInfo.name}
+                                </h4>
+                                <p style={{ color: '#38f9d7', fontSize: '16px' }}>
+                                    {generatedResume.personalInfo.email}
+                                    {generatedResume.personalInfo.phone && ` | ${generatedResume.personalInfo.phone}`}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Professional Summary */}
+                        {generatedResume.summary && (
+                            <div style={{ marginBottom: '25px' }}>
+                                <h4 style={{ color: '#43e97b', fontSize: '18px', marginBottom: '10px' }}>
+                                    PROFESSIONAL SUMMARY
+                                </h4>
+                                <p style={{ color: '#fff', fontSize: '16px', lineHeight: '1.6' }}>
+                                    {generatedResume.summary}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Experience */}
+                        {generatedResume.experience && generatedResume.experience.length > 0 && (
+                            <div style={{ marginBottom: '25px' }}>
+                                <h4 style={{ color: '#43e97b', fontSize: '18px', marginBottom: '15px' }}>
+                                    EXPERIENCE
+                                </h4>
+                                {generatedResume.experience.map((exp: any, index: number) => (
+                                    <div key={index} style={{ marginBottom: '20px' }}>
+                                        <h5 style={{ color: '#fff', fontSize: '16px', marginBottom: '5px' }}>
+                                            {exp.title || exp.role}
+                                        </h5>
+                                        {exp.company && (
+                                            <p style={{ color: '#38f9d7', fontSize: '14px', marginBottom: '5px' }}>
+                                                {exp.company}
+                                            </p>
+                                        )}
+                                        {exp.duration && (
+                                            <p style={{ color: '#999', fontSize: '14px', marginBottom: '10px' }}>
+                                                {exp.duration}
+                                            </p>
+                                        )}
+                                        {exp.description && (
+                                            <p style={{ color: '#ccc', fontSize: '14px', marginBottom: '10px' }}>
+                                                {exp.description}
+                                            </p>
+                                        )}
+                                        {exp.achievements && exp.achievements.length > 0 && (
+                                            <ul style={{ color: '#ccc', fontSize: '14px', paddingLeft: '20px' }}>
+                                                {exp.achievements.map((achievement: string, i: number) => (
+                                                    <li key={i} style={{ marginBottom: '5px' }}>{achievement}</li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Skills */}
+                        {generatedResume.skills && generatedResume.skills.length > 0 && (
+                            <div style={{ marginBottom: '25px' }}>
+                                <h4 style={{ color: '#43e97b', fontSize: '18px', marginBottom: '10px' }}>
+                                    SKILLS
+                                </h4>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                    {generatedResume.skills.map((skill: string, index: number) => (
+                                        <span key={index} style={{
+                                            background: 'rgba(67, 233, 123, 0.2)',
+                                            color: '#43e97b',
+                                            padding: '8px 15px',
+                                            borderRadius: '20px',
+                                            fontSize: '14px'
+                                        }}>
+                                            {skill}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Education */}
+                        {generatedResume.education && generatedResume.education.length > 0 && (
+                            <div style={{ marginBottom: '25px' }}>
+                                <h4 style={{ color: '#43e97b', fontSize: '18px', marginBottom: '15px' }}>
+                                    EDUCATION
+                                </h4>
+                                {generatedResume.education.map((edu: any, index: number) => (
+                                    <div key={index} style={{ marginBottom: '15px' }}>
+                                        <h5 style={{ color: '#fff', fontSize: '16px', marginBottom: '5px' }}>
+                                            {edu.degree || edu.title}
+                                        </h5>
+                                        {edu.institution && (
+                                            <p style={{ color: '#38f9d7', fontSize: '14px', marginBottom: '5px' }}>
+                                                {edu.institution}
+                                            </p>
+                                        )}
+                                        {edu.year && (
+                                            <p style={{ color: '#999', fontSize: '14px' }}>
+                                                {edu.year}
+                                            </p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Download Button */}
+                        <button
+                            onClick={downloadResume}
+                            style={{
+                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                border: 'none',
+                                padding: '15px 30px',
+                                borderRadius: '25px',
+                                color: '#fff',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '10px',
+                                margin: '20px auto 0',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = 'scale(1.05)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
+                        >
+                            <Download style={{ width: '20px', height: '20px' }} />
+                            Download Resume (TXT)
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* CSS Animations */}

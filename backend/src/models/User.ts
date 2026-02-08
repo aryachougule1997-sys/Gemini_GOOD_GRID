@@ -10,8 +10,8 @@ export class UserModel {
     username: string;
     email: string;
     password: string;
-    characterData: CharacterData;
-    locationData: LocationData;
+    characterData?: CharacterData | any;
+    locationData?: LocationData | any;
   }): Promise<User> {
     const client = await pool.connect();
     
@@ -20,6 +20,10 @@ export class UserModel {
       
       // Hash password
       const passwordHash = await bcrypt.hash(userData.password, 12);
+      
+      // Ensure characterData and locationData have default values
+      const characterData = userData.characterData || {};
+      const locationData = userData.locationData || {};
       
       // Insert user
       const userResult = await client.query(
@@ -30,8 +34,8 @@ export class UserModel {
           userData.username,
           userData.email,
           passwordHash,
-          JSON.stringify(userData.characterData),
-          JSON.stringify(userData.locationData)
+          JSON.stringify(characterData),
+          JSON.stringify(locationData)
         ]
       );
       
@@ -55,8 +59,9 @@ export class UserModel {
         createdAt: user.created_at,
         updatedAt: user.updated_at
       };
-    } catch (error) {
+    } catch (error: any) {
       await client.query('ROLLBACK');
+      console.error('UserModel.create error:', error.message);
       throw error;
     } finally {
       client.release();

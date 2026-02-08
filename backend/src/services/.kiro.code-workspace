@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"name": ".kiro",
+			"path": "../../../../../../../Downloads/Arya/Arya/.kiro"
+		},
+		{
+			"name": "GOOD_GRID",
+			"path": "../../../.."
+		},
+		{
+			"name": "good-grid-platform",
+			"path": "../../../../../../../Downloads/Arya/Arya/.kiro/specs/good-grid-platform"
+		}
+	],
+	"settings": {
+		"typescript.autoClosingTags": false
+	}
+}

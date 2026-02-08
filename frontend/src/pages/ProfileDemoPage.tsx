@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComprehensiveProfileDashboard } from '../components/Profile';
+import ComprehensiveProfileDashboard from '../components/Profile/ComprehensiveProfileDashboard';
 
 const ProfileDemoPage: React.FC = () => {
     return (

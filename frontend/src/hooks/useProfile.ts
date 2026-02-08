@@ -1,13 +1,51 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-    profileService, 
-    UserProfile, 
-    UserStats, 
-    WorkHistoryItem, 
-    Badge, 
-    CategoryStats,
-    ProfileAnalytics 
-} from '../services/profileService';
+import ProfileService, { UserProfile } from '../services/profileService';
+
+// Define missing interfaces that were expected
+interface UserStats {
+    trustScore: number;
+    rwisScore: number;
+    xpPoints: number;
+    currentLevel: number;
+    categoryStats: {
+        freelance: { tasksCompleted: number; totalXP: number; averageRating: number; };
+        community: { tasksCompleted: number; totalXP: number; averageRating: number; };
+        corporate: { tasksCompleted: number; totalXP: number; averageRating: number; };
+    };
+}
+
+interface WorkHistoryItem {
+    id: string;
+    company: string;
+    position: string;
+    startDate: string;
+    endDate?: string;
+    current: boolean;
+    description: string;
+    rating?: number; // Add optional rating
+}
+
+interface Badge {
+    id: string;
+    name: string;
+    description: string;
+    category: 'SKILL' | 'ACHIEVEMENT' | 'CATEGORY' | 'SPECIAL';
+    rarity: 'COMMON' | 'UNCOMMON' | 'RARE' | 'EPIC' | 'LEGENDARY';
+    earnedDate: Date;
+}
+
+interface CategoryStats {
+    tasksCompleted: number; 
+    totalXP: number; 
+    averageRating: number;
+}
+
+interface ProfileAnalytics {
+    totalTasks: number;
+    totalXP: number;
+    averageRating: number;
+    topCategories: string[];
+}
 
 interface UseProfileOptions {
     userId: string;
@@ -92,7 +130,7 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
         setProfileError(null);
         
         try {
-            const profileData = await profileService.getUserProfile(userId);
+            const profileData = await ProfileService.getProfile(userId);
             setProfile(profileData);
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to fetch profile';
@@ -111,8 +149,12 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
         setStatsError(null);
         
         try {
-            const statsData = await profileService.getUserStats(userId);
-            setStats(statsData);
+            // const statsData = await ProfileService.getUserStats(userId);
+            // setStats(statsData);
+            // For now, extract stats from profile
+            if (profile?.stats) {
+                setStats(profile.stats);
+            }
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to fetch stats';
             setStatsError(errorMessage);
@@ -130,8 +172,12 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
         setWorkHistoryError(null);
         
         try {
-            const workHistoryData = await profileService.getWorkHistory(userId, options);
-            setWorkHistory(workHistoryData);
+            // const workHistoryData = await ProfileService.getWorkHistory(userId, options);
+            // setWorkHistory(workHistoryData);
+            // For now, extract from profile
+            if (profile?.workExperience) {
+                setWorkHistory(profile.workExperience);
+            }
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to fetch work history';
             setWorkHistoryError(errorMessage);
@@ -149,8 +195,12 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
         setBadgesError(null);
         
         try {
-            const badgesData = await profileService.getUserBadges(userId);
-            setBadges(badgesData);
+            // const badgesData = await ProfileService.getUserBadges(userId);
+            // setBadges(badgesData);
+            // For now, extract from profile
+            if (profile?.badges) {
+                setBadges(profile.badges);
+            }
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to fetch badges';
             setBadgesError(errorMessage);
@@ -165,8 +215,12 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
         if (!userId) return;
         
         try {
-            const categoryStatsData = await profileService.getCategoryStats(userId);
-            setCategoryStats(categoryStatsData);
+            // const categoryStatsData = await ProfileService.getCategoryStats(userId);
+            // setCategoryStats(categoryStatsData);
+            // For now, extract from profile stats
+            if (profile?.stats?.categoryStats) {
+                setCategoryStats(profile.stats.categoryStats);
+            }
         } catch (err) {
             console.error('Error fetching category stats:', err);
         }
@@ -180,8 +234,25 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
         setAnalyticsError(null);
         
         try {
-            const analyticsData = await profileService.getProfileAnalytics(userId, timeRange);
-            setAnalytics(analyticsData);
+            // const analyticsData = await ProfileService.getProfileAnalytics(userId, timeRange);
+            // setAnalytics(analyticsData);
+            // For now, create basic analytics from profile data
+            if (profile && stats) {
+                const totalTasks = stats.categoryStats.freelance.tasksCompleted + 
+                                 stats.categoryStats.community.tasksCompleted + 
+                                 stats.categoryStats.corporate.tasksCompleted;
+                const totalXP = stats.xpPoints;
+                const avgRating = (stats.categoryStats.freelance.averageRating + 
+                                 stats.categoryStats.community.averageRating + 
+                                 stats.categoryStats.corporate.averageRating) / 3;
+                
+                setAnalytics({
+                    totalTasks,
+                    totalXP,
+                    averageRating: avgRating,
+                    topCategories: ['freelance', 'community', 'corporate']
+                });
+            }
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to fetch analytics';
             setAnalyticsError(errorMessage);
@@ -199,12 +270,16 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
         setError(null);
         
         try {
-            const comprehensiveData = await profileService.getComprehensiveProfile(userId);
-            setProfile(comprehensiveData.profile);
-            setStats(comprehensiveData.stats);
-            setWorkHistory(comprehensiveData.workHistory);
-            setBadges(comprehensiveData.badges);
-            setCategoryStats(comprehensiveData.categoryStats);
+            // const comprehensiveData = await ProfileService.getComprehensiveProfile(userId);
+            // For now, just fetch the profile and extract data
+            const profileData = await ProfileService.getProfile(userId);
+            if (profileData) {
+                setProfile(profileData);
+                setStats(profileData.stats);
+                setWorkHistory(profileData.workExperience || []);
+                setBadges(profileData.badges || []);
+                setCategoryStats(profileData.stats.categoryStats);
+            }
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to fetch profile data';
             setError(errorMessage);
@@ -219,7 +294,8 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
         if (!userId) return;
         
         try {
-            await profileService.updateCharacterCustomization(userId, customizationData);
+            // await ProfileService.updateCharacterCustomization(userId, customizationData);
+            await ProfileService.updateCharacter(userId, customizationData);
             // Refresh profile data to get updated character data
             await fetchProfile();
         } catch (err) {
@@ -233,7 +309,18 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
         if (!userId) return;
         
         try {
-            await profileService.exportProfileData(userId, format);
+            // await ProfileService.exportProfileData(userId, format);
+            // For now, just log or download the profile data
+            const profileData = await ProfileService.getProfile(userId);
+            if (profileData) {
+                const dataStr = format === 'json' ? JSON.stringify(profileData, null, 2) : 'CSV export not implemented';
+                const dataBlob = new Blob([dataStr], { type: format === 'json' ? 'application/json' : 'text/csv' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `profile_${userId}.${format}`;
+                link.click();
+            }
         } catch (err) {
             console.error('Error exporting profile:', err);
             throw err;
@@ -245,7 +332,17 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
         if (!userId) return [];
         
         try {
-            return await profileService.searchWorkHistory(userId, searchTerm, filters);
+            // return await ProfileService.searchWorkHistory(userId, searchTerm, filters);
+            // For now, just filter the existing work history
+            const profileData = await ProfileService.getProfile(userId);
+            if (profileData?.workExperience) {
+                return profileData.workExperience.filter((item: any) => 
+                    item.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    item.position.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    item.description.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+            return [];
         } catch (err) {
             console.error('Error searching work history:', err);
             throw err;
@@ -257,7 +354,7 @@ export const useProfile = ({ userId, autoFetch = true }: UseProfileOptions): Use
     const totalXP = stats?.xpPoints || 0;
     const totalRWIS = stats?.rwisScore || 0;
     const averageRating = workHistory.length > 0 
-        ? workHistory.reduce((sum, item) => sum + item.rating, 0) / workHistory.length 
+        ? workHistory.reduce((sum, item) => sum + (item.rating || 0), 0) / workHistory.length 
         : 0;
     
     // Calculate profile completion percentage

@@ -12,10 +12,12 @@ import DarkGameProfilePage from './pages/DarkGameProfilePage';
 import ComprehensiveProfileDashboard from './components/Profile/ComprehensiveProfileDashboard';
 import GamifiedUIDemo from './components/Demo/GamifiedUIDemo';
 import GamifiedOrganizationDashboard from './components/Organization/GamifiedOrganizationDashboard';
+import AuthDemo from './pages/AuthDemo';
+import TokenDebug from './pages/TokenDebug';
 import { CharacterData as GameCharacterData, User, Dungeon, UserStats, Task } from '../../shared/types';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'character' | 'map' | 'career' | 'integrated' | 'gamification' | 'zones' | 'profile' | 'dark-profile' | 'comprehensive-profile' | 'gamified-demo' | 'organization'>('home'); // Show home by default
+  const [currentPage, setCurrentPage] = useState<'home' | 'character' | 'map' | 'career' | 'integrated' | 'gamification' | 'zones' | 'profile' | 'dark-profile' | 'comprehensive-profile' | 'gamified-demo' | 'organization' | 'auth-demo' | 'token-debug'>('home'); // Show home by default
   const [characterData, setCharacterData] = useState<GameCharacterData | null>(null);
   
   // Mock user stats for demo
@@ -143,6 +145,14 @@ function App() {
 
   const handleNavigateToGamifiedDemo = () => {
     setCurrentPage('gamified-demo');
+  };
+
+  const handleNavigateToAuthDemo = () => {
+    setCurrentPage('auth-demo');
+  };
+
+  const handleNavigateToTokenDebug = () => {
+    setCurrentPage('token-debug');
   };
 
   // Add persistent header for all pages except home
@@ -291,6 +301,14 @@ function App() {
 
   if (currentPage === 'gamified-demo') {
     return renderWithHeader(<GamifiedUIDemo />);
+  }
+
+  if (currentPage === 'auth-demo') {
+    return <AuthDemo />;
+  }
+
+  if (currentPage === 'token-debug') {
+    return <TokenDebug />;
   }
 
   return (
@@ -704,6 +722,26 @@ function App() {
               className="bg-gradient-to-r from-violet-600 via-purple-700 to-indigo-800 text-white px-12 py-4 rounded-full text-xl font-bold shadow-2xl hover:scale-105 transform transition-all duration-300 animate-bounce border-2 border-violet-400"
             >
               🏰 Manage Your Guild! ⚔️
+            </button>
+          </div>
+          
+          {/* Auth Demo Button - ULTIMATE */}
+          <div>
+            <button 
+              onClick={handleNavigateToAuthDemo}
+              className="bg-gradient-to-r from-indigo-600 via-purple-700 to-pink-800 text-white px-12 py-4 rounded-full text-xl font-bold shadow-2xl hover:scale-105 transform transition-all duration-300 animate-bounce border-2 border-yellow-400"
+            >
+              🚀 Try Complete Auth System! 🎮
+            </button>
+          </div>
+          
+          {/* Token Debug Button - DEBUG TOOL */}
+          <div>
+            <button 
+              onClick={handleNavigateToTokenDebug}
+              className="bg-gradient-to-r from-slate-700 via-gray-800 to-black text-white px-12 py-4 rounded-full text-xl font-bold shadow-2xl hover:scale-105 transform transition-all duration-300 border-2 border-green-400"
+            >
+              🔍 Token Debug Tool 🔧
             </button>
           </div>
         </div>

@@ -1,6 +1,5 @@
 import { Pool } from 'pg';
-import { User } from '../models/User';
-import { Badge } from '../models/Badge';
+import { User, Badge } from '../../../shared/types';
 
 export interface NearbyUser {
   id: string;

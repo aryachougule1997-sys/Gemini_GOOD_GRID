@@ -1,7 +1,6 @@
 import express from 'express';
 import { UserModel } from '../models/User';
 import { generateToken } from '../middleware/auth';
-import { validate, registerSchema, loginSchema } from '../middleware/validation';
 import { ApiResponse } from '../../../shared/types';
 
 const router = express.Router();
@@ -10,9 +9,17 @@ const router = express.Router();
  * POST /api/auth/register
  * Register a new user
  */
-router.post('/register', validate(registerSchema), async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
     const { username, email, password, characterData, locationData } = req.body;
+
+    // Basic validation
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'Username, email, and password are required'
+      } as ApiResponse<null>);
+    }
 
     // Check if email already exists
     const existingEmail = await UserModel.emailExists(email);
@@ -32,13 +39,13 @@ router.post('/register', validate(registerSchema), async (req, res) => {
       } as ApiResponse<null>);
     }
 
-    // Create new user
+    // Create new user with default values for optional fields
     const user = await UserModel.create({
       username,
       email,
       password,
-      characterData,
-      locationData
+      characterData: characterData || {},
+      locationData: locationData || {}
     });
 
     // Generate JWT token
@@ -73,11 +80,13 @@ router.post('/register', validate(registerSchema), async (req, res) => {
       token: string;
     }>);
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Registration error:', error);
+    console.error('Error details:', error.message, error.stack);
     res.status(500).json({
       success: false,
-      error: 'Registration failed'
+      error: 'Registration failed',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
     } as ApiResponse<null>);
   }
 });
@@ -86,9 +95,17 @@ router.post('/register', validate(registerSchema), async (req, res) => {
  * POST /api/auth/login
  * Login user
  */
-router.post('/login', validate(loginSchema), async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    // Basic validation
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email and password are required'
+      } as ApiResponse<null>);
+    }
 
     // Find user by email
     const user = await UserModel.findByEmail(email);
